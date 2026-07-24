@@ -1,0 +1,81 @@
+# Cavalier — a DankMaterialShell-style media pill for the Noctalia bar.
+#
+# One widget that combines a live PipeWire audio visualizer (cava-style bars)
+# with three transport buttons (previous / play-pause / next). Clicking the
+# visualizer opens the built-in Control Center on its media view.
+#
+# Media control is done through `playerctl` (MPRIS), so make sure it is
+# installed. The visualizer uses Noctalia's built-in PipeWire spectrum
+# (delivered to onAudioSpectrum) — no `cava` process required.
+
+id = "werdin/cavalier"
+name = "Cavalier"
+version = "1.0.0"
+plugin_api = 3
+author = "werdin"
+license = "MIT"
+repository = "https://github.com/werdin/cavalier"
+dependencies = ["playerctl"]
+icon = "player-play"
+description = "Media pill: audio visualizer with prev / play-pause / next buttons."
+tags = ["media", "audio", "bar"]
+
+[[widget]]
+id = "cavalier"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "audio_spectrum"
+  type = "bool"
+  label_key = "settings.audio_spectrum.label"
+  description_key = "settings.audio_spectrum.description"
+  default = true
+
+  [[widget.setting]]
+  key = "show_visualizer"
+  type = "bool"
+  label_key = "settings.show_visualizer.label"
+  description_key = "settings.show_visualizer.description"
+  default = true
+
+  [[widget.setting]]
+  key = "sensitivity"
+  type = "double"
+  label_key = "settings.sensitivity.label"
+  description_key = "settings.sensitivity.description"
+  default = 2.0
+  min = 0.5
+  max = 8.0
+
+  [[widget.setting]]
+  key = "smoothing"
+  type = "double"
+  label_key = "settings.smoothing.label"
+  description_key = "settings.smoothing.description"
+  default = 0.6
+  min = 0.0
+  max = 0.95
+
+  [[widget.setting]]
+  key = "bar_count"
+  type = "int"
+  label_key = "settings.bar_count.label"
+  description_key = "settings.bar_count.description"
+  default = 14
+  min = 4
+  max = 32
+
+  [[widget.setting]]
+  key = "accent_color"
+  type = "color"
+  label_key = "settings.accent_color.label"
+  description_key = "settings.accent_color.description"
+  default = "primary"
+
+  [[widget.setting]]
+  key = "cc_context"
+  type = "string"
+  label_key = "settings.cc_context.label"
+  description_key = "settings.cc_context.description"
+  default = "media"
+  advanced = true

@@ -1,0 +1,19 @@
+{
+  "settings.audio_spectrum.label": "Audio reactive",
+  "settings.audio_spectrum.description": "Make the visualizer react to the PipeWire audio spectrum.",
+  "settings.sensitivity.label": "Sensitivity",
+  "settings.sensitivity.description": "Gain applied to the audio spectrum bars. Lower = calmer.",
+  "settings.smoothing.label": "Smoothing",
+  "settings.smoothing.description": "Damps how fast the bars move. Higher = smoother and calmer (0 = raw, snappy).",
+  "settings.show_visualizer.label": "Show visualizer",
+  "settings.show_visualizer.description": "Show the audio spectrum bars.",
+  "settings.bar_count.label": "Visualizer bars",
+  "settings.bar_count.description": "Number of spectrum bars to draw.",
+  "settings.accent_color.label": "Accent color",
+  "settings.accent_color.description": "Color of the bars, title and buttons.",
+  "settings.cc_context.label": "Control Center view",
+  "settings.cc_context.description": "Control Center view opened when clicking the visualizer.",
+  "tooltip.previous": "Previous",
+  "tooltip.playpause": "Play / Pause",
+  "tooltip.next": "Next"
+}
