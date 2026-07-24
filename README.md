@@ -24,8 +24,12 @@ Add this repository as a plugin source, then enable the plugin:
 
 ```bash
 noctalia msg plugins source add cavalier git https://github.com/werdin/cavalier
+noctalia msg plugins update cavalier   # fetch the source
 noctalia msg plugins enable werdin/cavalier
 ```
+
+> If the plugin doesn't appear right after adding the source, restart Noctalia
+> so it fetches the new git source, then run the `enable` command.
 
 Then add the **Cavalier** widget to a bar from Noctalia's **widget picker**
 (Settings → Bar → *+ Add widget*). Adding it through the picker is what attaches
