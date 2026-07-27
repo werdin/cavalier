@@ -1,0 +1,20 @@
+# This file is auto-generated. Do not edit manually.
+# Cavalier plugin source catalog.
+# Index of every plugin this source ships: the minimum needed to render, search,
+# and compat-check the list. The per-plugin plugin.toml stays authoritative; the
+# host re-reads it on enable. Keep one [[plugin]] row per plugin subdirectory.
+# A [[plugin.release]] row names an older revision for a Noctalia below the tip's
+# plugin_api, so an older release stays installable instead of the plugin vanishing.
+
+[[plugin]]
+id = "werdin/cavalier"
+name = "Cavalier"
+version = "1.0.0"
+updated_at = 1784887097
+added_at = 1784887097
+author = "werdin"
+license = "MIT"
+icon = "player-play"
+description = "Media pill: audio visualizer with prev / play-pause / next buttons."
+plugin_api = 3
+tags = ["media", "audio", "bar"]
