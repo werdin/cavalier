@@ -11,7 +11,8 @@ all in one widget.
 - ⏮ ⏯ ⏭ **Transport buttons** — control whatever is actually playing (prefers a
   Playing player over a paused background tab), with a filled accent play-pause.
 - 🖱️ **Click the visualizer** to open the built-in Control Center media view.
-- 🎚️ Tunable **sensitivity**, **smoothing**, bar count and accent colour.
+- 🎚️ Tunable **sensitivity**, **smoothing**, bar count, accent colour and which
+  **side** the visualizer sits on.
 
 ## Requirements
 
@@ -37,15 +38,16 @@ the settings gear (⚙) — a hand-edited bar entry renders but has no settings.
 
 ## Settings
 
-| Setting          | Type   | Default   | Description                                            |
-| ---------------- | ------ | --------- | ------------------------------------------------------ |
-| `audio_spectrum` | bool   | `true`    | React to the PipeWire audio spectrum.                  |
-| `show_visualizer`| bool   | `true`    | Draw the visualizer bars.                              |
-| `sensitivity`    | double | `2.0`     | Gain applied to the bars. Lower = calmer.              |
-| `smoothing`      | double | `0.6`     | Damps how fast the bars move. Higher = smoother.       |
-| `bar_count`      | int    | `14`      | Number of spectrum bars.                               |
-| `accent_color`   | color  | `primary` | Colour of the bars and the play-pause button.          |
-| `cc_context`     | string | `media`   | Control Center view opened when clicking the cava.     |
+| Setting               | Type   | Default   | Description                                                   |
+| --------------------- | ------ | --------- | ------------------------------------------------------------- |
+| `audio_spectrum`      | bool   | `true`    | React to the PipeWire audio spectrum.                         |
+| `show_visualizer`     | bool   | `true`    | Draw the visualizer bars.                                     |
+| `visualizer_position` | select | `left`    | Side the bars sit on: `left` / `right` (top / bottom when the bar is vertical). |
+| `sensitivity`         | double | `2.0`     | Gain applied to the bars. Lower = calmer.                     |
+| `smoothing`           | double | `0.6`     | Damps how fast the bars move. Higher = smoother.              |
+| `bar_count`           | int    | `14`      | Number of spectrum bars.                                      |
+| `accent_color`        | color  | `primary` | Colour of the bars and the play-pause button.                 |
+| `cc_context`          | string | `media`   | Control Center view opened when clicking the cava.            |
 
 ## Usage
 

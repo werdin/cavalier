@@ -10,7 +10,7 @@
 
 id = "werdin/cavalier"
 name = "Cavalier"
-version = "1.0.1"
+version = "1.1.0"
 plugin_api = 3
 author = "werdin"
 license = "MIT"
@@ -37,6 +37,17 @@ entry = "widget.luau"
   label_key = "settings.show_visualizer.label"
   description_key = "settings.show_visualizer.description"
   default = true
+
+  [[widget.setting]]
+  key = "visualizer_position"
+  type = "select"
+  label_key = "settings.visualizer_position.label"
+  description_key = "settings.visualizer_position.description"
+  default = "left"
+  options = [
+    { value = "left", label_key = "settings.visualizer_position.options.left" },
+    { value = "right", label_key = "settings.visualizer_position.options.right" },
+  ]
 
   [[widget.setting]]
   key = "sensitivity"

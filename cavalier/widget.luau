@@ -2,6 +2,7 @@
 -- Media Cava — bar widget entry.
 --
 -- Layout (horizontal bar):  [ audio visualizer ] [ ⏮  ⏯  ⏭ ]
+--   …or the mirror image, when visualizer_position = "right".
 --
 -- Data sources:
 --   * onAudioSpectrum(valuesCsv, stateCsv) — Noctalia's built-in PipeWire
@@ -27,6 +28,9 @@ local SMOOTHING = tonumber(noctalia.getConfig("smoothing")) or 0.6
 if SMOOTHING < 0 then SMOOTHING = 0 end
 if SMOOTHING > 0.95 then SMOOTHING = 0.95 end
 local SHOW_VIS = noctalia.getConfig("show_visualizer") ~= false
+-- Which side of the transport buttons the visualizer sits on. On a vertical bar
+-- the capsule is a column, so "left" reads as top and "right" as bottom.
+local VIS_RIGHT = noctalia.getConfig("visualizer_position") == "right"
 local BAR_COUNT = math.max(4, math.floor(tonumber(noctalia.getConfig("bar_count")) or 14))
 local ACCENT = noctalia.getConfig("accent_color") or "primary"
 local CC_CONTEXT = noctalia.getConfig("cc_context") or "media"
@@ -85,7 +89,7 @@ end
 local function render()
   local kids = {}
 
-  if SHOW_VIS then
+  if SHOW_VIS and not VIS_RIGHT then
     table.insert(kids, visualizer())
   end
 
@@ -121,6 +125,10 @@ local function render()
     tooltip = noctalia.tr("tooltip.next"),
     onClick = "onNext",
   }))
+
+  if SHOW_VIS and VIS_RIGHT then
+    table.insert(kids, visualizer())
+  end
 
   local container = isVertical and ui.column or ui.row
   barWidget.render(container({ gap = 4, align = "center" }, kids))
