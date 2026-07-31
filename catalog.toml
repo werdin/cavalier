@@ -9,8 +9,8 @@
 [[plugin]]
 id = "werdin/cavalier"
 name = "Cavalier"
-version = "1.0.1"
-updated_at = 1785499436
+version = "1.1.0"
+updated_at = 1785503524
 added_at = 1784887097
 author = "werdin"
 license = "MIT"
