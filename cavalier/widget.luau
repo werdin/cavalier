@@ -9,8 +9,8 @@
 --       means audio is active. Defining this global is the opt-in — the host
 --       wires the spectrum when the plugin is (re)enabled/loaded.
 --   * playerctl (MPRIS) — polled in update() to pick the active player (the one
---       that is Playing, else the first available) for the play/pause glyph and
---       for the transport buttons.
+--       that is Playing, else the one we last controlled) for the play/pause
+--       glyph and for the transport buttons.
 --
 -- Interaction:
 --   * transport buttons consume their own clicks (onPrev/onPlayPause/onNext);
@@ -131,15 +131,17 @@ local function render()
 end
 
 -- ── MPRIS player selection (polled) ──────────────────────────────────────────
--- Pick the player that is Playing; fall back to the first available one, so the
--- buttons and the play/pause glyph follow whatever is actually making sound
--- rather than a random paused background tab.
+-- Follow whatever is actually playing, but stay *sticky* once we have a player:
+-- with several MPRIS sources around (say mpd + Spotify) pausing the active one
+-- leaves them all Paused, and a plain "first paused wins" rule would silently
+-- hand the buttons to whichever name playerctl happens to list first. Then the
+-- next Play would resume the wrong player.
 local function refreshMeta()
   noctalia.runAsync(
     "playerctl -a metadata --format '{{playerName}}\t{{status}}\t{{title}}\t{{artist}}' 2>/dev/null",
     function(res)
       local out = res and res.stdout or ""
-      local playing, paused, firstAny
+      local playing, paused, firstAny, current
 
       for line in out:gmatch("[^\n]+") do
         local name, st, ti, ar = line:match("^([^\t]*)\t([^\t]*)\t([^\t]*)\t(.*)$")
@@ -148,13 +150,26 @@ local function refreshMeta()
           if not firstAny then firstAny = entry end
           if st == "Playing" and not playing then playing = entry end
           if st == "Paused" and not paused then paused = entry end
+          if name == activePlayer then current = entry end
         end
       end
 
-      -- Prefer whatever is actually playing, then anything paused (a real player
-      -- with content), and only then fall back to the first player of any state
-      -- (e.g. a Stopped mpd) so we never latch onto it over a paused Spotify.
-      local pick = playing or paused or firstAny
+      -- A Stopped player (e.g. an idle mpd) is not worth sticking to — treat it
+      -- as "no current player" so a paused Spotify can take over instead.
+      if current and current.st ~= "Playing" and current.st ~= "Paused" then
+        current = nil
+      end
+
+      local pick
+      if current and current.st == "Playing" then
+        pick = current -- the player we already track is the one making sound
+      elseif playing then
+        pick = playing -- something else started playing — follow it
+      elseif current then
+        pick = current -- nothing is playing: keep the player we last controlled
+      else
+        pick = paused or firstAny -- cold start, or our player disappeared
+      end
       local chTitle, chArtist = "", ""
       if pick then
         activePlayer = pick.name
