@@ -36,6 +36,24 @@ Then add the **Cavalier** widget to a bar from Noctalia's **widget picker**
 (Settings → Bar → *+ Add widget*). Adding it through the picker is what attaches
 the settings gear (⚙) — a hand-edited bar entry renders but has no settings.
 
+## Updating
+
+```bash
+noctalia msg plugins update cavalier            # source name, see below
+noctalia msg plugins disable werdin/cavalier
+noctalia msg plugins enable  werdin/cavalier
+```
+
+> ⚠️ The argument to `plugins update` is the **source** name you passed to
+> `source add`, and it is case-sensitive. With a name that doesn't match,
+> Noctalia still answers `ok (updating in background)` but fetches nothing — so
+> a new setting silently fails to show up. Check the exact spelling with
+> `noctalia msg plugins source list`, and confirm the new version landed with
+> `noctalia msg plugins list | head -1`.
+
+The disable/enable pass is what re-wires the audio spectrum; settings-only
+changes would otherwise keep using the previously loaded manifest.
+
 ## Settings
 
 | Setting               | Type   | Default   | Description                                                   |
