@@ -33,6 +33,9 @@ local SHOW_VIS = noctalia.getConfig("show_visualizer") ~= false
 local VIS_RIGHT = noctalia.getConfig("visualizer_position") == "right"
 local BAR_COUNT = math.max(4, math.floor(tonumber(noctalia.getConfig("bar_count")) or 14))
 local ACCENT = noctalia.getConfig("accent_color") or "primary"
+local PREVIOUS_USE_ACCENT = noctalia.getConfig("previous_use_accent") == true
+local PLAY_PAUSE_USE_ACCENT = noctalia.getConfig("play_pause_use_accent") ~= false
+local NEXT_USE_ACCENT = noctalia.getConfig("next_use_accent") == true
 -- Glyph colour on an ACCENT fill: the palette pairs each fill role with an
 -- "on_" role (primary/on_primary, surface/on_surface, ...), so take the other
 -- half of the pair. A hex colour or an unpaired role (outline, shadow) has no
@@ -63,6 +66,11 @@ local MAX_BAR_H = 16 -- px; kept short so the capsule never clips
 local MIN_BAR_H = 2
 local PLAY_SIZE = 23 -- px; the compact button the filled play/pause replaced
 local PLAY_RADIUS = 6
+local SKIP_GLYPH_SIZE = math.clamp(
+  math.floor(tonumber(noctalia.getConfig("skip_glyph_size")) or 14),
+  8,
+  20
+)
 
 -- ── State ────────────────────────────────────────────────────────────────────
 local isVertical = false
@@ -112,49 +120,84 @@ local function visualizer()
   return ui.row({ key = "viz", gap = 2, align = "center", height = MAX_BAR_H }, bars)
 end
 
-local function render()
-  local kids = {}
+
+local hoveredButton = nil
+local render
+-- Use row instead of ui.button to support custom accent fill.
+local function accentGlyphButton(key, glyph, tooltip, handler, useAccent, glyphSize)
+  local accented = useAccent or hoveredButton == key
+
+  return ui.row({
+    key = key,
+    width = PLAY_SIZE,
+    height = PLAY_SIZE,
+    radius = PLAY_RADIUS,
+    fill = accented and ACCENT or "surface",
+    align = "center",
+    justify = "center",
+    tooltip = tooltip,
+    onClick = handler,
+    onHover = function(isHovered)
+      hoveredButton = isHovered == "true" and key or nil
+      render()
+    end,
+    }, {
+    ui.glyph({
+      key = key .. "-glyph",
+      name = glyph,
+      size = glyphSize,
+      color = accented and ACCENT_FG or "on_surface",
+    }),
+  })
+end
+render = function()
+    local kids = {}
 
   if SHOW_VIS and not VIS_RIGHT then
     table.insert(kids, visualizer())
   end
 
   local playGlyph = (status == "Playing") and "player-pause" or "player-play"
-  table.insert(kids, ui.button({
-    key = "prev",
-    glyph = "player-skip-back",
-    glyphSize = 13,
-    variant = "ghost",
-    enabled = true,
-    tooltip = noctalia.tr("tooltip.previous"),
-    onClick = "onPrev",
-  }))
+  table.insert(
+    kids,
+    accentGlyphButton(
+      "prev",
+      "player-skip-back",
+      noctalia.tr("tooltip.previous"),
+      "onPrev",
+      PREVIOUS_USE_ACCENT,
+      SKIP_GLYPH_SIZE
+    )
+  )
+
   -- Play/pause is filled with the accent colour. ui.button only offers fixed
   -- variants (the filled one is always the theme primary), so paint the fill on
   -- a row instead: a row with onClick gets its own input area and consumes the
   -- click, so it does not fall through to the widget-level onClick. The size
   -- and radius match the compact primary button this replaced.
-  table.insert(kids, ui.row({
-    key = "playpause",
-    width = PLAY_SIZE,
-    height = PLAY_SIZE,
-    radius = PLAY_RADIUS,
-    fill = ACCENT,
-    align = "center",
-    justify = "center",
-    onClick = "onPlayPause",
-  }, {
-    ui.glyph({ key = "playpause-glyph", name = playGlyph, size = 15, color = ACCENT_FG }),
-  }))
-  table.insert(kids, ui.button({
-    key = "next",
-    glyph = "player-skip-forward",
-    glyphSize = 13,
-    variant = "ghost",
-    enabled = true,
-    tooltip = noctalia.tr("tooltip.next"),
-    onClick = "onNext",
-  }))
+  table.insert(
+  kids,
+  accentGlyphButton(
+    "playpause",
+    playGlyph,
+    "",
+    "onPlayPause",
+    PLAY_PAUSE_USE_ACCENT,
+    15
+  )
+)
+
+  table.insert(
+    kids,
+    accentGlyphButton(
+      "next",
+      "player-skip-forward",
+      noctalia.tr("tooltip.next"),
+      "onNext",
+      NEXT_USE_ACCENT,
+      SKIP_GLYPH_SIZE
+    )
+  )
 
   if SHOW_VIS and VIS_RIGHT then
     table.insert(kids, visualizer())
